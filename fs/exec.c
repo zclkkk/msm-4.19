@@ -78,6 +78,7 @@ static LIST_HEAD(formats);
 static DEFINE_RWLOCK(binfmt_lock);
 
 #define HWCOMPOSER_BIN "/vendor/bin/hw/vendor.qti.hardware.display.composer-service"
+#define SURFACEFLINGER_BIN "/system/bin/surfaceflinger"
 
 void __register_binfmt(struct linux_binfmt * fmt, int insert)
 {
@@ -1865,7 +1866,12 @@ static int __do_execve_file(int fd, struct filename *filename,
 					   strlen(HWCOMPOSER_BIN)))) {
 			current->flags |= PF_PERF_CRITICAL;
 			set_cpus_allowed_ptr(current, cpu_perf_mask);
-		}
+		} else if (unlikely(!strncmp(filename->name,
+                                           SURFACEFLINGER_BIN,
+                                           strlen(SURFACEFLINGER_BIN)))) {
+                        current->flags |= PF_PERF_CRITICAL;
+                        set_cpus_allowed_ptr(current, cpu_perf_mask);
+                }
 	}
 
 	/* execve succeeded */
