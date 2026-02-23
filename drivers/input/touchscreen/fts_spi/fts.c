@@ -238,7 +238,7 @@ static ssize_t fts_fwupdate_store(struct device *dev,
 	mode[1] = 1;
 
 	/* reading out firmware upgrade parameters */
-	sscanf(buf, "%100s %d %d", path, &mode[0], &mode[1]);
+	sscanf(buf, "%99s %d %d", path, &mode[0], &mode[1]);
 	logError(1, "%s fts_fwupdate_store: mode = %s \n", tag, path);
 
 	ret = flashProcedure(path, mode[0], mode[1]);
@@ -6458,7 +6458,7 @@ static void fts_update_touchmode_data(void)
 	};
 	int temp_value = 0;
 	const struct fts_hw_platform_data *bdata = fts_info->board;
-	static expert_mode = false;
+	static int expert_mode = false;
 
 	ret = wait_event_interruptible_timeout(fts_info->wait_queue,
 					       !(fts_info->irq_status ||
@@ -7351,7 +7351,7 @@ static int fts_write_charge_status(int status)
 	return res;
 }
 
-static int fts_get_charging_status()
+static int fts_get_charging_status(void)
 {
 	struct power_supply *usb_psy;
 	struct power_supply *dc_psy;
